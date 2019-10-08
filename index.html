@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>First APP</title>
 </head>
 <body>
-    <h1>Home Page</h1>
+    <h1>First APP</h1>
+    <form>
+        <div>
+            <input type="file" accept="image/*" />
+        </div>
+        <button type="submit">Get Size</button>
+    </form>
+    <h1 id="result"></h1>
+    <script>
+    const electron = require('electron');
+    const { ipcRenderer } = electron;
+    document.querySelector("form").addEventListener('submit', event => {
+        event.preventDefault();
+        const { path } = document.querySelector('input').files[0] || { path: null };
+        if(path)
+            ipcRenderer.send('getImageSize', path);
+    })
+    ipcRenderer.on('setImageSize', (event, dimensions) => {
+        const { width, height } = dimensions;
+        document.querySelector('#result').innerHTML = `Width: ${width} Height: ${height}`;
+    })
+    </script>
 </body>
 </html>
